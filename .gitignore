@@ -1,0 +1,32 @@
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Model checkpoints and temporary files
+checkpoint/
+ckpt.data-*
+ckpt.index
+*.pdbqt
+temp_*.sdf
+
+# Database files
+*.db
+
+# IDE/editor temporary files
+.DS_Store
+*.swp
+*.swo
+
+# Virtual environment files (if any)
+venv/
+env/
+
+# Logs or temporary data
+*.log
+*.tmp
+
+# PyCharm or other IDE files (optional, if used)
+.idea/
+
+# Jupyter notebooks checkpoint
+.ipynb_checkpoints/
