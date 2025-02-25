@@ -1,0 +1,6 @@
+deepchem
+rdkit
+numpy<2.1.0,>=1.26.0  # Compatible with TensorFlow 2.18.0
+pandas
+tensorflow==2.18.0
+absl-py
