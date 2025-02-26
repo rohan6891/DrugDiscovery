@@ -8,6 +8,7 @@ ckpt.data-*
 ckpt.index
 *.pdbqt
 temp_*.sdf
+gcpn_model/  # Add this line
 
 # Database files
 *.db

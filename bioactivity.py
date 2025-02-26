@@ -4,15 +4,19 @@ from rdkit import Chem
 import os
 import subprocess
 import tempfile
+import molecule_generation  # Import the new file
 
 def predict_bioactivity(smiles_dataset, protein_pdb_path):
-    """Predict bioactivity and docking scores using AutoDock Vina."""
+    """Predict bioactivity and docking scores, including generated molecules."""
     # Find binding pockets
     finder = dc.dock.binding_pocket.ConvexHullPocketFinder()
     pockets = finder.find_pockets(protein_pdb_path)
     if not pockets:
         raise ValueError("No binding pockets found in protein.")
     
+    pocket = pockets[0]  # Use the first pocket
+    
+    # Dock the input molecule (CCO) as before
     # Validate SMILES
     smiles = smiles_dataset.ids[0]
     mol = Chem.MolFromSmiles(smiles)
@@ -74,8 +78,20 @@ def predict_bioactivity(smiles_dataset, protein_pdb_path):
             print("Vina output:", result.stdout)
             raise ValueError("Failed to extract docking score from Vina output.")
 
+    # Generate and dock target-specific molecules using molecule_generation
+    generated_smiles = molecule_generation.generate_target_specific_molecules(protein_pdb_path, num_molecules=5)
+    generated_scores = {}
+    for i, gen_smiles in enumerate(generated_smiles):
+        try:
+            generated_scores[f"generated_molecule_{i+1}"] = molecule_generation.dock_molecule(gen_smiles, protein_pdb_path, pocket)
+        except ValueError as e:
+            print(f"Failed to dock generated molecule {gen_smiles}: {e}")
+            generated_scores[f"generated_molecule_{i+1}"] = None  # Mark as failed
+
+    # Return results
     return {
         "Molecular Docking Score": score,
+        "Molecular Docking Scores (Generated)": generated_scores,
         "Target Binding Affinity": "Not Implemented",
         "Enzyme Inhibition/Activation": "Not Implemented",
         "Bioavailability Score": "Not Implemented"
